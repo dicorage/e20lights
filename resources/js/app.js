@@ -15,6 +15,52 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .mixin({
+                data: function() {
+                    let mode = localStorage.getItem('modeTheme') ?? 'dark';
+                    if(mode == 'system'){
+                      if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+                        mode = 'dark';
+
+                      }else{
+                        mode = 'light';
+                      }
+                    }else{
+                      mode = mode;
+                    }
+                    return {
+                      modeTheme: mode
+                    }
+                  },
+                  onMount(){
+                    const mode = localStorage.getItem('modeTheme') ?? 'dark';
+                    if(mode == 'system'){
+                      if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+                        this.modeTheme = 'dark';
+
+                      }else{
+                        this.modeTheme = 'light';
+                      }
+                    }else{
+                      this.modeTheme = mode;
+                    }
+                  },
+                  methods: {
+                    toggleMode(mode){
+                      localStorage.setItem('modeTheme', mode);
+                        if(mode == 'system'){
+                          if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+                            this.modeTheme = 'dark';
+
+                          }else{
+                            this.modeTheme = 'light';
+                          }
+                        }else{
+                          this.modeTheme = mode;
+                        }
+                    }
+                  }
+            })
             .mount(el);
     },
     progress: {
